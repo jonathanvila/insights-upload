@@ -22,7 +22,7 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc config host add myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
+      /usr/bin/mc config host add myminio http://$MINIO_HOST:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
       /usr/bin/mc mb myminio/insights-upload-perm-test;
       /usr/bin/mc mb myminio/insights-upload-quarantine;
       /usr/bin/mc mb myminio/insights-upload-upload-rejected;
@@ -38,7 +38,7 @@ services:
     depends_on:
       - zookeeper
     environment:
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://$KAFKAMQ
       - KAFKA_BROKER_ID=1
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
@@ -57,7 +57,7 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
       - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
-      - S3_ENDPOINT_URL=http://minio:9000
+      - S3_ENDPOINT_URL=http://$MINIO_HOST:9000
       # set storage driver if not s3
       #- STORAGE_DRIVER=localdisk
       # set env variables if not using the default
